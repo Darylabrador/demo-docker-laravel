@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+  webserver:
+    container_name: demo-webserver
+    build: 
+      args:
+        user: daryl
+        uid: 1000
+      context: ./docker/webserver
+    working_dir: /var/www/
+    environment:
+      - COMPOSER_ALLOW_SUPERUSER=1
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www
+    
+  mysql:
+    image: mariadb
+    restart: always
+    container_name: demo-db
+    environment:
+      - MARIADB_USER=${DB_USERNAME}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/mariadb:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    container_name: dem-adminer
+    ports:
+      - 8080:8080
